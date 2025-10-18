@@ -1,0 +1,67 @@
+kube-ovn:
+  namespace: cozy-kubeovn
+  func:
+    ENABLE_NP: false
+  ipv4:
+    POD_CIDR: "10.244.0.0/16"
+    POD_GATEWAY: "10.244.0.1"
+    SVC_CIDR: "10.96.0.0/16"
+    JOIN_CIDR: "100.64.0.0/16"
+  MASTER_NODES_LABEL: "node-role.kubernetes.io/control-plane"
+  networking:
+    ENABLE_SSL: true
+  cni_conf:
+    CNI_CONFIG_PRIORITY: "10"
+    MOUNT_LOCAL_BIN_DIR: false
+  OPENVSWITCH_DIR: "/var/lib/openvswitch"
+  OVN_DIR: "/var/lib/ovn"
+  DISABLE_MODULES_MANAGEMENT: true
+  ovn-central:
+    requests:
+      cpu: "50m"
+      memory: "100Mi"
+    limits:
+      cpu: "3"
+      memory: "4Gi"
+  ovs-ovn:
+    requests:
+      cpu: "10m"
+      memory: "50Mi"
+    limits:
+      cpu: "2"
+      memory: "1000Mi"
+  kube-ovn-controller:
+    requests:
+      cpu: "10m"
+      memory: "100Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+  kube-ovn-cni:
+    requests:
+      cpu: "50m"
+      memory: "50Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+  kube-ovn-pinger:
+    requests:
+      cpu: "10m"
+      memory: "50Mi"
+    limits:
+      cpu: "200m"
+      memory: "400Mi"
+  kube-ovn-monitor:
+    requests:
+      cpu: "10m"
+      memory: "50Mi"
+    limits:
+      cpu: "200m"
+      memory: "200Mi"
+global:
+  registry:
+    address: ghcr.io/cozystack/cozystack
+  images:
+    kubeovn:
+      repository: kubeovn
+      tag: v1.14.5@sha256:af10da442a0c6dc7df47a0ef752e2eb5c247bb0b43069fdfcb2aa51511185ea2
