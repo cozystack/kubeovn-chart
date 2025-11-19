@@ -24,7 +24,7 @@ update:
 
 image:
 	docker buildx build ./docker/ \
-		--tag $(REGISTRY)/kubeovn:$(KUBEOVN_TAG) \
+		--tag $(REGISTRY)/kubeovn:v$(KUBEOVN_TAG) \
 		--cache-from type=registry,ref=$(REGISTRY)/kubeovn:latest \
 		--cache-to type=inline \
 		--metadata-file kubeovn.json \
@@ -33,6 +33,6 @@ image:
 		yq -i '.global.registry.address = strenv(REGISTRY)' chart/values.yaml
 	REPOSITORY="kubeovn" \
 		yq -i '.global.images.kubeovn.repository = strenv(REPOSITORY)' chart/values.yaml
-	TAG="$(KUBEOVN_TAG)@$$(yq e '."containerimage.digest"' kubeovn.json -o json -r)" \
-		yq -i '.global.images.kubeovn.tag = strenv(TAG)' values.yaml
+	TAG="v$(KUBEOVN_TAG)@$$(yq e '."containerimage.digest"' kubeovn.json -o json -r)" \
+		yq -i '.global.images.kubeovn.tag = strenv(TAG)' chart/values.yaml
 	rm -f kubeovn.json
