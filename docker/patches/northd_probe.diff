@@ -2,18 +2,18 @@ diff --git a/pkg/ovn_leader_checker/ovn.go b/pkg/ovn_leader_checker/ovn.go
 index 0f86a371d..8ddf7bca6 100755
 --- a/pkg/ovn_leader_checker/ovn.go
 +++ b/pkg/ovn_leader_checker/ovn.go
-@@ -10,6 +10,7 @@ import (
- 	"os/exec"
+@@ -14,6 +14,7 @@ import (
+ 	"slices"
  	"strconv"
  	"strings"
 +	"sync"
  	"syscall"
  	"time"
- 
-@@ -271,19 +272,56 @@ func checkNorthdSvcExist(cfg *Configuration, namespace, svcName string) bool {
+
+@@ -306,19 +307,56 @@ func checkNorthdSvcExist(cfg *Configuration, namespace, svcName string) bool {
  	return true
  }
- 
+
 -func checkNorthdEpAvailable(ip string) bool {
 -	address := net.JoinHostPort(ip, OvnNorthdPort)
 -	conn, err := net.DialTimeout("tcp", address, 3*time.Second)
@@ -79,24 +79,24 @@ index 0f86a371d..8ddf7bca6 100755
  	}
  	return true
  }
-@@ -295,6 +333,8 @@ func checkNorthdEpAlive(cfg *Configuration, namespace, service string) bool {
+@@ -330,6 +368,8 @@ func checkNorthdEpAlive(cfg *Configuration, namespace, service string) bool {
  		return false
  	}
- 
+
 +	addresses := []string{}
 +
  	for _, eps := range epsList.Items {
  		for _, ep := range eps.Endpoints {
  			if (ep.Conditions.Ready != nil && !*ep.Conditions.Ready) || len(ep.Addresses) == 0 {
-@@ -303,12 +343,15 @@ func checkNorthdEpAlive(cfg *Configuration, namespace, service string) bool {
- 
+@@ -338,12 +378,15 @@ func checkNorthdEpAlive(cfg *Configuration, namespace, service string) bool {
+
  			// Found an address, check its availability. We only need one.
  			klog.V(5).Infof("found address %s in endpoint slice %s/%s for service %s, checking availability", ep.Addresses[0], eps.Namespace, eps.Name, service)
 -			return checkNorthdEpAvailable(ep.Addresses[0])
 +			addresses = append(addresses, ep.Addresses[0]) // Addresses are fungible by k8s API design
  		}
  	}
- 
+
 -	klog.V(5).Infof("no address found in any endpoint slices for service %s/%s", namespace, service)
 -	return false
 +	if len(addresses) == 0 {
@@ -105,5 +105,5 @@ index 0f86a371d..8ddf7bca6 100755
 +	}
 +	return checkNorthdEpAvailable(addresses...)
  }
- 
+
  func compactOvnDatabase(db string) {
