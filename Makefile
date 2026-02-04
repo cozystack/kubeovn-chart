@@ -13,14 +13,14 @@ BUILDX_ARGS := --provenance=false --push=$(PUSH) --load=$(LOAD) \
 
 update:
 	rm -rf chart/charts && mkdir -p chart/charts/kube-ovn
-	tag=$$(git ls-remote --tags --sort="v:refname" https://github.com/kubeovn/kube-ovn | awk -F'[/^]' '{print $$3}' | grep '^v1\.14\.' | tail -n1 ) && \
+	tag=$$(git ls-remote --tags --sort="v:refname" https://github.com/kubeovn/kube-ovn | awk -F'[/^]' '{print $$3}' | grep '^v1\.15\.' | tail -n1 ) && \
 	curl -sSL https://github.com/kubeovn/kube-ovn/archive/refs/tags/$${tag}.tar.gz | \
 	tar -C ./chart/ -xzvf - --strip 1 kube-ovn-$${tag#*v}/charts/kube-ovn
 	patch --no-backup-if-mismatch -p4 -d ./chart/ < patches/cozyconfig.diff
 	patch --no-backup-if-mismatch -p4 -d ./chart/ < patches/mtu.diff
 	version=$$(awk '$$1 == "appVersion:" {print $$2}' chart/charts/kube-ovn/Chart.yaml) && \
-	sed -i "s/ARG VERSION=.*/ARG VERSION=$${version}/" docker/Dockerfile && \
-	sed -i "s/ARG TAG=.*/ARG TAG=$${version}/" docker/Dockerfile
+	sed -i'' -e "s/ARG VERSION=.*/ARG VERSION=$${version}/" docker/Dockerfile && \
+	sed -i'' -e "s/ARG TAG=.*/ARG TAG=$${version}/" docker/Dockerfile
 
 image:
 	docker buildx build ./docker/ \

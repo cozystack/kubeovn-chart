@@ -1,10 +1,10 @@
 # syntax = docker/dockerfile:experimental
-ARG VERSION="1.14.25"
+ARG VERSION="1.15.3"
 ARG BASE_TAG=v$VERSION
 
 FROM golang:1.25-bookworm as builder
 
-ARG TAG="v1.14.25"
+ARG TAG="1.15.3"
 RUN git clone --branch ${TAG} --depth 1 https://github.com/kubeovn/kube-ovn /source
 
 WORKDIR /source
