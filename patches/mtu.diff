@@ -1,11 +1,9 @@
 diff --git a/packages/system/kubeovn/charts/kube-ovn/templates/ovncni-ds.yaml b/packages/system/kubeovn/charts/kube-ovn/templates/ovncni-ds.yaml
-index 63f4258..dafe1fd 100644
 --- a/packages/system/kubeovn/charts/kube-ovn/templates/ovncni-ds.yaml
 +++ b/packages/system/kubeovn/charts/kube-ovn/templates/ovncni-ds.yaml
-@@ -112,6 +112,9 @@ spec:
-           - --secure-serving={{- .Values.func.SECURE_SERVING }}
-           - --enable-ovn-ipsec={{- .Values.func.ENABLE_OVN_IPSEC }}
+@@ -122,6 +122,9 @@
            - --set-vxlan-tx-off={{- .Values.func.SET_VXLAN_TX_OFF }}
+           - --non-primary-cni-mode={{- .Values.cni_conf.NON_PRIMARY_CNI }}
 +          {{- with .Values.mtu }}
 +          - --mtu={{ . }}
 +          {{- end }}
