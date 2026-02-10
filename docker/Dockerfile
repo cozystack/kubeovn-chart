@@ -4,13 +4,13 @@ ARG BASE_TAG=v$VERSION
 
 FROM golang:1.25-bookworm as builder
 
-ARG TAG="1.15.3"
+ARG TAG="v1.15.3"
 RUN git clone --branch ${TAG} --depth 1 https://github.com/kubeovn/kube-ovn /source
 
 WORKDIR /source
 
-COPY patches /patches
-RUN git apply /patches/*.diff
+#COPY patches /patches
+#RUN git apply /patches/*.diff
 RUN make build-go
 
 WORKDIR /source/dist/images
