@@ -16,7 +16,6 @@ update:
 	tag=$$(git ls-remote --tags --sort="v:refname" https://github.com/kubeovn/kube-ovn | awk -F'[/^]' '{print $$3}' | grep '^v1\.15\.' | tail -n1 ) && \
 	curl -sSL https://github.com/kubeovn/kube-ovn/archive/refs/tags/$${tag}.tar.gz | \
 	tar -C ./chart/ -xzvf - --strip 1 kube-ovn-$${tag#*v}/charts/kube-ovn
-	patch --no-backup-if-mismatch -p4 -d ./chart/ < patches/cozyconfig.diff
 	patch --no-backup-if-mismatch -p4 -d ./chart/ < patches/mtu.diff
 	version=$$(awk '$$1 == "appVersion:" {print $$2}' chart/charts/kube-ovn/Chart.yaml) && \
 	sed -i'' -e "s/ARG VERSION=.*/ARG VERSION=$${version}/" docker/Dockerfile && \

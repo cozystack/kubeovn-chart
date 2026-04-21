@@ -9,8 +9,8 @@ RUN git clone --branch ${TAG} --depth 1 https://github.com/kubeovn/kube-ovn /sou
 
 WORKDIR /source
 
-#COPY patches /patches
-#RUN git apply /patches/*.diff
+COPY patches /patches
+RUN git apply /patches/*.diff
 RUN make build-go
 
 WORKDIR /source/dist/images
