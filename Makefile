@@ -19,7 +19,7 @@ update:
 	patch --no-backup-if-mismatch -p4 -d ./chart/ < patches/mtu.diff
 	version=$$(awk '$$1 == "appVersion:" {print $$2}' chart/charts/kube-ovn/Chart.yaml) && \
 	sed -i'' -e "s/ARG VERSION=.*/ARG VERSION=$${version}/" docker/Dockerfile && \
-	sed -i'' -e "s/ARG TAG=.*/ARG TAG=$${version}/" docker/Dockerfile
+	sed -i'' -e "s/ARG TAG=.*/ARG TAG=v$${version}/" docker/Dockerfile
 
 image:
 	docker buildx build ./docker/ \
